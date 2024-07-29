@@ -38,6 +38,7 @@ setyacdip(){
     [ -z "$db_port" ] && db_port=9999
     sed -ri "s/([0-9]{1,3}\.){3}[0-9]{1,3}/${host}/g" ${CRASHDIR}/ui/*.html
     sed -ri "s/([0-9]{1,3}\.){3}[0-9]{1,3}:9090/${host}:${db_port}/g" ${CRASHDIR}/ui/*.html
+    echo -e "面板IP\033[32m变更成功！\033[0m"
 }
 
 BASEDIR=$(dirname $0)
@@ -52,8 +53,6 @@ if [ -z "$CRASHDIR" ]; then
         [ -z "$(grep 'userguide=1' ${CRASHDIR}/configs/ShellCrash.cfg)" ] && echo -e "1\n0\n0\n0\n0\n" | crash
         echo -e "ShellCrash \033[32m安装成功！\033[0m"
     fi
-else
-    source ${CRASHDIR}/start.sh
 fi
 
 [ -z "$CRASHDIR" ] && echo "系统安装失败。" && exit 1
