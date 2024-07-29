@@ -24,8 +24,8 @@ sed -i 's/${g}.*/${a}${b}${c}${d}${e}${f}${hydrid}/g' package/lean/autocore/file
 # 8-增固件连接数
 sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' package/base-files/files/etc/sysctl.conf
 
-mkdir -p files/opt/ShellCrash
-curl -o files/opt/ShellCrash/ShellCrash.tar.gz -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/ShellCrash.tar.gz
-curl -o files/opt/ShellCrash/meta_yacd.tar.gz -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/dashboard/meta_yacd.tar.gz
-curl -o files/opt/ShellCrash/singboxp-linux-amd64.tar.gz -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/singboxp/singbox-linux-amd64.tar.gz
-curl -o files/opt/ShellCrash/install.sh -fsSL https://raw.githubusercontent.com/cgistar/openwrt-tiny/main/sc.sh
+mkdir -p files/etc/ShellCrash/ui
+curl -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/ShellCrash.tar.gz | tar -zxC files/etc/ShellCrash
+curl -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/dashboard/meta_yacd.tar.gz | tar -zxC files/etc/ShellCrash/ui
+curl -o files/etc/ShellCrash/CrashCore.tar.gz -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/singboxp/singbox-linux-amd64.tar.gz
+chmod +x files/etc/ShellCrash/setup.sh

@@ -9,7 +9,7 @@ openwrt x86_64旁路由专用，仅保留ZeroTier WireGuard ttyd lucky ShellCras
 ## ShellCrash 安装
 安装文件在`/opt/ShellCrash`下，进入系统-TTYD终端，在里面运行：
 ```sh
-sh /opt/ShellCrash/install.sh
+sh /etc/ShellCrash/setup.sh
 ```
 按需选择进行安装
 
