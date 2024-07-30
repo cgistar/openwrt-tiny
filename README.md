@@ -17,7 +17,8 @@ sh /etc/ShellCrash/setup.sh
 1. Sing-Box-Puer内核
 2. yacd魔改面板
 3. 代理模式为：Tproxy模式
-4. DNS配置来自 [sing-box PuerNya 版内核配置 DNS 不泄露教程-ruleset 方案](https://github.com/DustinWin/clash_singbox-tutorials/blob/main/%E6%95%99%E7%A8%8B%E5%90%88%E9%9B%86/sing-box/%E8%BF%9B%E9%98%B6%E7%AF%87/sing-box%20PuerNya%20%E7%89%88%E5%86%85%E6%A0%B8%E9%85%8D%E7%BD%AE%20DNS%20%E4%B8%8D%E6%B3%84%E9%9C%B2%E6%95%99%E7%A8%8B-ruleset%20%E6%96%B9%E6%A1%88.md)，做了部分修改，去除了fake-ip有需要的自己加入
+4. DNS配置来自 [sing-box PuerNya 版内核配置 DNS 不泄露教程-ruleset 方案](https://github.com/DustinWin/clash_singbox-tutorials/blob/main/%E6%95%99%E7%A8%8B%E5%90%88%E9%9B%86/sing-box/%E8%BF%9B%E9%98%B6%E7%AF%87/sing-box%20PuerNya%20%E7%89%88%E5%86%85%E6%A0%B8%E9%85%8D%E7%BD%AE%20DNS%20%E4%B8%8D%E6%B3%84%E9%9C%B2%E6%95%99%E7%A8%8B-ruleset%20%E6%96%B9%E6%A1%88.md)，做了部分修改
+5. 去除了fake-ip有需要的自己加入
 
 ## DNS配置文件在$CRASHDIR/jsons/dns.json
 按需修改
@@ -73,5 +74,3 @@ sh /etc/ShellCrash/setup.sh
   }
 }
 ```
-
-## 本项目 fork 自 [WukongMaster/OpenWrt-Mini](https://github.com/WukongMaster/OpenWrt-Mini)
