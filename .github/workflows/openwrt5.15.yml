@@ -145,7 +145,7 @@ jobs:
           默认地址：192.168.5.100
           默认密码：无密码
           插件清单：ZeroTier WireGuard ttyd lucky ShellCrash...
-          安装ShellCrash：sh /etc/ShellCrash/setup.sh
+          安装ShellCrash：sh /etc/sub/install_sc.sh
         artifacts: ${{ env.FIRMWARE }}/*
 
     - name: 清理编译流程

@@ -28,4 +28,4 @@ mkdir -p files/etc/ShellCrash/ui
 curl -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/ShellCrash.tar.gz | tar -zxC files/etc/ShellCrash
 curl -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/dashboard/meta_yacd.tar.gz | tar -zxC files/etc/ShellCrash/ui
 curl -o files/etc/ShellCrash/CrashCore.tar.gz -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/singboxp/singbox-linux-amd64.tar.gz
-chmod +x files/etc/ShellCrash/setup.sh
+chmod +x files/etc/sub/install_sc.sh

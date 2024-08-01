@@ -152,7 +152,7 @@ jobs:
         echo "默认地址：192.168.5.100" >> release.txt
         echo "默认密码：无密码" >> release.txt
         echo "插件清单：ZeroTier WireGuard ttyd lucky ShellCrash..." >> release.txt
-        echo "安装ShellCrash：sh /etc/ShellCrash/setup.sh" >> release.txt
+        echo "安装ShellCrash：sh /etc/sub/install_sc.sh" >> release.txt
         echo "status=success" >> $GITHUB_OUTPUT
 
     - name: 发布新版固件
