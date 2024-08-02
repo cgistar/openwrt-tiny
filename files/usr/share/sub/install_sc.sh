@@ -60,6 +60,7 @@ fi
 if [ ! -f $CRASHDIR/CrashCore.tar.gz -a -f $BASEDIR/singboxp-linux-amd64.tar.gz ]; then
     cp -f $BASEDIR/singboxp-linux-amd64.tar.gz $CRASHDIR/CrashCore.tar.gz
     echo -e "Sing-Box-Puer内核 \033[32m安装成功！\033[0m"
+    echo -e "提供订阅转换工具，使用方法: /usr/share/sub/sub.py http://www.订阅1.com http://订阅2.com ..."
 fi
 
 if [ -z "$(grep 'crashcore=singbox' ${CRASHDIR}/configs/ShellCrash.cfg)" ]; then
