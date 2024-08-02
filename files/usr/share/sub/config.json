@@ -114,14 +114,14 @@
       "type": "select",
       "proxies": ["♻️ 自动选择", "DIRECT", "🔰 节点选择", "🔰 组选择", "@节点组"],
       "rule_set": ["onedrive"],
-      "hosts": ["https://sh.brinfo.cc:81/clash/rule_provider/OneDrive.list"]
+      "hosts": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/OneDrive.list"]
     },
     {
       "name": "Ⓜ️ 微软",
       "type": "select",
       "proxies": ["DIRECT", "♻️ 自动选择", "🔰 节点选择", "🔰 组选择", "@节点组"],
       "rule_set": ["microsoft-cn"],
-      "hosts": ["https://sh.brinfo.cc:81/clash/rule_provider/Microsoft.list"]
+      "hosts": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list"]
     },
     {
       "name": "🧩 ChatGPT",
@@ -140,7 +140,7 @@
       "type": "select",
       "proxies": ["DIRECT", "🔰 节点选择", "🔰 组选择", "@节点组"],
       "rule_set": ["appletv"],
-      "hosts": ["https://sh.brinfo.cc:81/clash/rule_provider/Apple.list"],
+      "hosts": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list"],
       "rules": [
         "DOMAIN,np-edge.itunes.apple.com",
         "DOMAIN,play-edge.itunes.apple.com",
@@ -177,7 +177,7 @@
       "proxies": ["♻️ 自动选择", "🔰 节点选择", "🔰 组选择", "@节点组"],
       "rule_set": ["netflix", "netflixip"],
       "skip_resolve": true,
-      "hosts": ["https://sh.brinfo.cc:81/clash/rule_provider/Netflix.list"]
+      "hosts": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Netflix.list"]
     },
     {
       "name": "📽️ 迪士尼+",
@@ -300,73 +300,6 @@
       "type": "select",
       "interrupt_exist_connections": true,
       "proxies": ["♻️ 自动选择", "🔰 节点选择", "🔰 组选择", "DIRECT", "@节点组"]
-    }
-  ],
-  "rule-providers": {
-    "personal": {
-      "type": "http",
-      "behavior": "classical",
-      "path": "./rule_provider/personal",
-      "url": "https://sh.brinfo.cc:81/clash/rule_provider/personal.yaml",
-      "interval": "3600",
-      "proxy": "DIRECT"
-    },
-    "Custom": {
-      "type": "http",
-      "behavior": "classical",
-      "path": "./rule_provider/Custom",
-      "url": "https://sh.brinfo.cc:81/clash/rule_provider/Custom.yaml",
-      "interval": "3600",
-      "proxy": "PROXY"
-    }
-  },
-  "other_rules": [
-    {
-      "path": "DIRECT",
-      "rules": [
-        "DOMAIN-SUFFIX,ip6-localhost",
-        "DOMAIN-SUFFIX,ip6-loopback",
-        "DOMAIN-SUFFIX,lan",
-        "DOMAIN-SUFFIX,local",
-        "DOMAIN-SUFFIX,localhost",
-        "DOMAIN,instant.arubanetworks.com",
-        "DOMAIN,setmeup.arubanetworks.com",
-        "DOMAIN,router.asus.com",
-        "DOMAIN-SUFFIX,hiwifi.com",
-        "DOMAIN-SUFFIX,leike.cc",
-        "DOMAIN-SUFFIX,miwifi.com",
-        "DOMAIN-SUFFIX,my.router",
-        "DOMAIN-SUFFIX,p.to",
-        "DOMAIN-SUFFIX,peiluyou.com",
-        "DOMAIN-SUFFIX,phicomm.me",
-        "DOMAIN-SUFFIX,router.ctc",
-        "DOMAIN-SUFFIX,routerlogin.com",
-        "DOMAIN-SUFFIX,tendawifi.com",
-        "DOMAIN-SUFFIX,zte.home",
-        "DOMAIN-SUFFIX,tplogin.cn"
-      ]
-    },
-    {
-      "path": "DIRECT",
-      "hosts": ["https://sh.brinfo.cc:81/clash/rule_provider/ChinaDomain.list"],
-      "rules": [
-        "USER-AGENT,MicroMessenger Client*",
-        "USER-AGENT,WeChat*",
-        "DOMAIN,safebrowsing.urlsec.qq.com",
-        "USER-AGENT,cloudd*",
-        "DOMAIN-SUFFIX,cdn20.com",
-        "DOMAIN-SUFFIX,edgekey.net",
-        "DOMAIN-SUFFIX,mwcloudcdn.com",
-        "DOMAIN-SUFFIX,mwcname.com"
-      ]
-    },
-    {
-      "path": "DIRECT",
-      "rule_set": ["https://sh.brinfo.cc:81/clash/rule_provider/personal.list"]
-    },
-    {
-      "path": "🐟 漏网之鱼",
-      "rule_set": ["https://sh.brinfo.cc:81/clash/rule_provider/Custom.list"]
     }
   ],
   "surge": {
@@ -709,8 +642,8 @@
   },
   "ads_rule": {
     "rule_set": [
-      "https://sh.brinfo.cc:81/clash/rule_provider/BanAD.list",
-      "https://sh.brinfo.cc:81/clash/rule_provider/BanProgramAD.list"
+      "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list",
+      "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list"
     ],
     "rules": [
       "DOMAIN,cloudservice7.kingsoft-office-service.com",
