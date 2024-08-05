@@ -38,57 +38,10 @@ sh /usr/share/sub/install_sc.sh
 nohup python3 /usr/share/sub/sub.py -web -p=25500 2>&1 >>/dev/null &
 ```
 
-## DNS配置文件在$CRASHDIR/jsons/dns.json
-按需修改
-```json
-{
-  "dns": {
-    "servers": [
-      { "tag": "dns_refused", "address": "rcode://success" },
-      { "tag": "dns_proxy", "address": "https://1.1.1.1/dns-query" },
-      { "tag": "dns_direct", "address": "https://223.5.5.5/dns-query", "detour": "DIRECT" }
-    ],
-    "rules": [
-      { "domain_suffix": "in-addr.arpa", "server": "dns_refused", "disable_cache": true },
-      { "outbound": "any", "server": "dns_direct" },
-      { "clash_mode": "direct", "server": "dns_direct" },
-      { "clash_mode": "global", "rewrite_ttl": 0, "disable_cache": true, "server": "dns_proxy" },
-      { "rule_set": ["geosite-category-ads-all"], "server": "dns_refused" },
-      { "rule_set": ["geosite-cn"], "query_type": ["A", "AAAA"], "server": "dns_direct" },
-      { "rule_set": ["proxy"], "query_type": ["A", "AAAA"], "rewrite_ttl": 0, "disable_cache": true, "server": "dns_proxy" }
-    ],
-    "final": "dns_proxy",
-    "strategy": "prefer_ipv4",
-    "independent_cache": true,
-    "reverse_mapping": true
-  }
-}
-```
+## 固件来源：
 
-自己配置好rule_set需要的文件
-```json
-{
-  "route": {
-    "rule_set": [
-      {
-        "tag": "geosite-cn",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-cn.srs"
-      },
-      {
-        "tag": "geosite-category-ads-all",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://raw.githubusercontent.com/SagerNet/sing-geosite/rule-set/geosite-category-ads-all.srs"
-      },
-      {
-        "tag": "proxy",
-        "type": "remote",
-        "format": "binary",
-        "url": "https://raw.githubusercontent.com/DustinWin/ruleset_geodata/sing-box-ruleset/proxy.srs"
-      }
-    ]
-  }
-}
-```
+lean固件源码地址：https://github.com/coolsnowwolf/lede
+
+插件引用：[luci-app-lucky](https://github.com/gdy666/luci-app-lucky.git) [luci-theme-opentomcat](https://github.com/WukongMaster/luci-theme-opentomcat.git) [ShellCrash](https://github.com/juewuy/ShellCrash)
+
+由衷感谢所有为openwrt无私奉献的大佬们。
