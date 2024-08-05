@@ -114,14 +114,109 @@
       "type": "select",
       "proxies": ["♻️ 自动选择", "DIRECT", "🔰 节点选择", "🔰 组选择", "@节点组"],
       "rule_set": ["onedrive"],
-      "hosts": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/OneDrive.list"]
+      "rules": [
+        "USER-AGENT,OneDrive*",
+        "USER-AGENT,OneDriveiOSApp*",
+        "DOMAIN-KEYWORD,1drv",
+        "DOMAIN-KEYWORD,onedrive",
+        "DOMAIN-KEYWORD,skydrive",
+        "DOMAIN-SUFFIX,livefilestore.com",
+        "DOMAIN-SUFFIX,oneclient.sfx.ms",
+        "DOMAIN-SUFFIX,onedrive.com",
+        "DOMAIN-SUFFIX,onedrive.live.com",
+        "DOMAIN-SUFFIX,photos.live.com",
+        "DOMAIN-SUFFIX,sharepoint.com",
+        "DOMAIN-SUFFIX,sharepointonline.com",
+        "DOMAIN-SUFFIX,skydrive.wns.windows.com",
+        "DOMAIN-SUFFIX,spoprod-a.akamaihd.net",
+        "DOMAIN-SUFFIX,storage.live.com",
+        "DOMAIN-SUFFIX,storage.msn.com"
+      ]
     },
     {
       "name": "Ⓜ️ 微软",
       "type": "select",
       "proxies": ["DIRECT", "♻️ 自动选择", "🔰 节点选择", "🔰 组选择", "@节点组"],
-      "rule_set": ["microsoft-cn"],
-      "hosts": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Microsoft.list"]
+      "rules": [
+        "DOMAIN-KEYWORD,1drv",
+        "DOMAIN-KEYWORD,microsoft",
+        "DOMAIN-SUFFIX,aadrm.com",
+        "DOMAIN-SUFFIX,acompli.com",
+        "DOMAIN-SUFFIX,acompli.net",
+        "DOMAIN-SUFFIX,aka.ms",
+        "DOMAIN-SUFFIX,akadns.net",
+        "DOMAIN-SUFFIX,aspnetcdn.com",
+        "DOMAIN-SUFFIX,assets-yammer.com",
+        "DOMAIN-SUFFIX,azure.com",
+        "DOMAIN-SUFFIX,azure.net",
+        "DOMAIN-SUFFIX,azureedge.net",
+        "DOMAIN-SUFFIX,azureiotcentral.com",
+        "DOMAIN-SUFFIX,azurerms.com",
+        "DOMAIN-SUFFIX,bing.com",
+        "DOMAIN-SUFFIX,bing.net",
+        "DOMAIN-SUFFIX,bingapis.com",
+        "DOMAIN-SUFFIX,cloudapp.net",
+        "DOMAIN-SUFFIX,cloudappsecurity.com",
+        "DOMAIN-SUFFIX,edgesuite.net",
+        "DOMAIN-SUFFIX,gfx.ms",
+        "DOMAIN-SUFFIX,hotmail.com",
+        "DOMAIN-SUFFIX,live.com",
+        "DOMAIN-SUFFIX,live.net",
+        "DOMAIN-SUFFIX,lync.com",
+        "DOMAIN-SUFFIX,msappproxy.net",
+        "DOMAIN-SUFFIX,msauth.net",
+        "DOMAIN-SUFFIX,msauthimages.net",
+        "DOMAIN-SUFFIX,msecnd.net",
+        "DOMAIN-SUFFIX,msedge.net",
+        "DOMAIN-SUFFIX,msft.net",
+        "DOMAIN-SUFFIX,msftauth.net",
+        "DOMAIN-SUFFIX,msftauthimages.net",
+        "DOMAIN-SUFFIX,msftidentity.com",
+        "DOMAIN-SUFFIX,msidentity.com",
+        "DOMAIN-SUFFIX,msn.cn",
+        "DOMAIN-SUFFIX,msn.com",
+        "DOMAIN-SUFFIX,msocdn.com",
+        "DOMAIN-SUFFIX,msocsp.com",
+        "DOMAIN-SUFFIX,mstea.ms",
+        "DOMAIN-SUFFIX,o365weve.com",
+        "DOMAIN-SUFFIX,oaspapps.com",
+        "DOMAIN-SUFFIX,office.com",
+        "DOMAIN-SUFFIX,office.net",
+        "DOMAIN-SUFFIX,office365.com",
+        "DOMAIN-SUFFIX,officeppe.net",
+        "DOMAIN-SUFFIX,omniroot.com",
+        "DOMAIN-SUFFIX,onenote.com",
+        "DOMAIN-SUFFIX,onenote.net",
+        "DOMAIN-SUFFIX,onestore.ms",
+        "DOMAIN-SUFFIX,outlook.com",
+        "DOMAIN-SUFFIX,outlookmobile.com",
+        "DOMAIN-SUFFIX,phonefactor.net",
+        "DOMAIN-SUFFIX,public-trust.com",
+        "DOMAIN-SUFFIX,sfbassets.com",
+        "DOMAIN-SUFFIX,sfx.ms",
+        "DOMAIN-SUFFIX,sharepoint.com",
+        "DOMAIN-SUFFIX,sharepointonline.com",
+        "DOMAIN-SUFFIX,skype.com",
+        "DOMAIN-SUFFIX,skypeassets.com",
+        "DOMAIN-SUFFIX,skypeforbusiness.com",
+        "DOMAIN-SUFFIX,staffhub.ms",
+        "DOMAIN-SUFFIX,svc.ms",
+        "DOMAIN-SUFFIX,sway-cdn.com",
+        "DOMAIN-SUFFIX,sway-extensions.com",
+        "DOMAIN-SUFFIX,sway.com",
+        "DOMAIN-SUFFIX,trafficmanager.net",
+        "DOMAIN-SUFFIX,uservoice.com",
+        "DOMAIN-SUFFIX,virtualearth.net",
+        "DOMAIN-SUFFIX,visualstudio.com",
+        "DOMAIN-SUFFIX,windows-ppe.net",
+        "DOMAIN-SUFFIX,windows.com",
+        "DOMAIN-SUFFIX,windows.net",
+        "DOMAIN-SUFFIX,windowsazure.com",
+        "DOMAIN-SUFFIX,windowsupdate.com",
+        "DOMAIN-SUFFIX,wunderlist.com",
+        "DOMAIN-SUFFIX,yammer.com",
+        "DOMAIN-SUFFIX,yammerusercontent.com"
+      ]
     },
     {
       "name": "🧩 ChatGPT",
@@ -140,8 +235,9 @@
       "type": "select",
       "proxies": ["DIRECT", "🔰 节点选择", "🔰 组选择", "@节点组"],
       "rule_set": ["appletv"],
-      "hosts": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list"],
       "rules": [
+        "DOMAIN,hls-amt.itunes.apple.com",
+        "DOMAIN,hls.itunes.apple.com",
         "DOMAIN,np-edge.itunes.apple.com",
         "DOMAIN,play-edge.itunes.apple.com",
         "DOMAIN-SUFFIX,tv.apple.com",
@@ -302,18 +398,96 @@
       "proxies": ["♻️ 自动选择", "🔰 节点选择", "🔰 组选择", "DIRECT", "@节点组"]
     }
   ],
+  "other_rules": [
+    {
+      "path": "DIRECT",
+      "rules": [
+        "DOMAIN-SUFFIX,ip6-localhost",
+        "DOMAIN-SUFFIX,ip6-loopback",
+        "DOMAIN-SUFFIX,lan",
+        "DOMAIN-SUFFIX,local",
+        "DOMAIN-SUFFIX,localhost",
+        "DOMAIN,instant.arubanetworks.com",
+        "DOMAIN,setmeup.arubanetworks.com",
+        "DOMAIN,router.asus.com",
+        "DOMAIN-SUFFIX,hiwifi.com",
+        "DOMAIN-SUFFIX,leike.cc",
+        "DOMAIN-SUFFIX,miwifi.com",
+        "DOMAIN-SUFFIX,my.router",
+        "DOMAIN-SUFFIX,p.to",
+        "DOMAIN-SUFFIX,peiluyou.com",
+        "DOMAIN-SUFFIX,phicomm.me",
+        "DOMAIN-SUFFIX,router.ctc",
+        "DOMAIN-SUFFIX,routerlogin.com",
+        "DOMAIN-SUFFIX,tendawifi.com",
+        "DOMAIN-SUFFIX,zte.home",
+        "DOMAIN-SUFFIX,tplogin.cn"
+      ]
+    },
+    {
+      "path": "DIRECT",
+      "hosts": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list"],
+      "rule_set": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list"],
+      "rules": [
+        "USER-AGENT,MicroMessenger Client*",
+        "USER-AGENT,WeChat*",
+        "DOMAIN,safebrowsing.urlsec.qq.com",
+        "USER-AGENT,cloudd*",
+        "DOMAIN-SUFFIX,cdn20.com",
+        "DOMAIN-SUFFIX,edgekey.net",
+        "DOMAIN-SUFFIX,mwcloudcdn.com",
+        "DOMAIN-SUFFIX,mwcname.com"
+      ]
+    }
+  ],
   "surge": {
     "General": {
-        "wifi-access-http-port": 6152,
-        "wifi-access-socks5-port": 6153,
-        "http-listen": "0.0.0.0:6152",
-        "socks5-listen": "0.0.0.0:6153",
-        "dns-server": "223.5.5.5, 119.29.29.29",
-        "skip-proxy": "192.168.0.0/24, 10.0.0.0/8, 172.16.0.0/12, 127.0.0.1, localhost, *.local",
-        "tun-excluded-routes": " 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12",
-        "internet-test-url": "http://www.baidu.com",
-        "proxy-test-url": "http://www.gstatic.com/generate_204",
-        "geoip-maxmind-url": "https://unpkg.zhimg.com/rulestatic@1.0.1/Country.mmdb"
+      "wifi-access-http-port": 6152,
+      "wifi-access-socks5-port": 6153,
+      "http-listen": "0.0.0.0:6152",
+      "socks5-listen": "0.0.0.0:6153",
+      "dns-server": "223.5.5.5, 119.29.29.29",
+      "skip-proxy": "192.168.0.0/24, 10.0.0.0/8, 172.16.0.0/12, 127.0.0.1, localhost, *.local",
+      "tun-excluded-routes": " 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12",
+      "internet-test-url": "http://www.baidu.com",
+      "proxy-test-url": "http://www.gstatic.com/generate_204",
+      "geoip-maxmind-url": "https://unpkg.zhimg.com/rulestatic@1.0.1/Country.mmdb"
+    },
+    "ads_rule": {
+      "rule_set": [
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list",
+        "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list"
+      ],
+      "rules": [
+        "DOMAIN,cloudservice7.kingsoft-office-service.com",
+        "DOMAIN-KEYWORD,admarvel",
+        "DOMAIN-KEYWORD,admaster",
+        "DOMAIN-KEYWORD,adsage",
+        "DOMAIN-KEYWORD,adsmogo",
+        "DOMAIN-KEYWORD,adsrvmedia",
+        "DOMAIN-KEYWORD,adwords",
+        "DOMAIN-KEYWORD,adservice",
+        "DOMAIN-KEYWORD,domob",
+        "DOMAIN-KEYWORD,duomeng",
+        "DOMAIN-KEYWORD,dwtrack",
+        "DOMAIN-KEYWORD,guanggao",
+        "DOMAIN-KEYWORD,lianmeng",
+        "DOMAIN-KEYWORD,mopub",
+        "DOMAIN-KEYWORD,omgmta",
+        "DOMAIN-KEYWORD,openx",
+        "DOMAIN-KEYWORD,partnerad",
+        "DOMAIN-KEYWORD,pingfore",
+        "DOMAIN-KEYWORD,supersonicads",
+        "DOMAIN-KEYWORD,uedas",
+        "DOMAIN-KEYWORD,umeng",
+        "DOMAIN-KEYWORD,usage",
+        "DOMAIN-KEYWORD,wlmonitor",
+        "DOMAIN-KEYWORD,zjtoolbar",
+        "DOMAIN-SUFFIX,appsflyer.com",
+        "DOMAIN-SUFFIX,doubleclick.net",
+        "DOMAIN-SUFFIX,mmstat.com",
+        "DOMAIN-SUFFIX,vungle.com"
+      ]
     },
     "url_rewrite": ["^https?://(www.)?(g|google).cn https://www.google.com 302"]
   },
@@ -325,7 +499,7 @@
       "proxy-server-nameserver": ["https://doh.pub/dns-query", "https://dns.alidns.com/dns-query"],
       "nameserver-policy": {
         "rule-set:ads": "rcode://success",
-        "rule-set:microsoft-cn,apple-cn,games-cn,cn,private": [
+        "rule-set:apple-cn,games-cn,cn,private": [
           "https://doh.pub/dns-query",
           "https://dns.alidns.com/dns-query"
         ]
@@ -349,15 +523,6 @@
         "url": "https://raw.githubusercontent.com/DustinWin/ruleset_geodata/clash-ruleset/private.list",
         "interval": 86400,
         "proxy": "DIRECT"
-      },
-      "microsoft-cn": {
-        "type": "http",
-        "behavior": "domain",
-        "format": "text",
-        "path": "./rules/microsoft-cn.list",
-        "url": "https://raw.githubusercontent.com/DustinWin/ruleset_geodata/clash-ruleset/microsoft-cn.list",
-        "interval": 86400,
-        "proxy": "Ⓜ️ 微软"
       },
       "apple-cn": {
         "type": "http",
@@ -639,41 +804,5 @@
         }
       ]
     }
-  },
-  "ads_rule": {
-    "rule_set": [
-      "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanAD.list",
-      "https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/BanProgramAD.list"
-    ],
-    "rules": [
-      "DOMAIN,cloudservice7.kingsoft-office-service.com",
-      "DOMAIN-KEYWORD,admarvel",
-      "DOMAIN-KEYWORD,admaster",
-      "DOMAIN-KEYWORD,adsage",
-      "DOMAIN-KEYWORD,adsmogo",
-      "DOMAIN-KEYWORD,adsrvmedia",
-      "DOMAIN-KEYWORD,adwords",
-      "DOMAIN-KEYWORD,adservice",
-      "DOMAIN-KEYWORD,domob",
-      "DOMAIN-KEYWORD,duomeng",
-      "DOMAIN-KEYWORD,dwtrack",
-      "DOMAIN-KEYWORD,guanggao",
-      "DOMAIN-KEYWORD,lianmeng",
-      "DOMAIN-KEYWORD,mopub",
-      "DOMAIN-KEYWORD,omgmta",
-      "DOMAIN-KEYWORD,openx",
-      "DOMAIN-KEYWORD,partnerad",
-      "DOMAIN-KEYWORD,pingfore",
-      "DOMAIN-KEYWORD,supersonicads",
-      "DOMAIN-KEYWORD,uedas",
-      "DOMAIN-KEYWORD,umeng",
-      "DOMAIN-KEYWORD,usage",
-      "DOMAIN-KEYWORD,wlmonitor",
-      "DOMAIN-KEYWORD,zjtoolbar",
-      "DOMAIN-SUFFIX,appsflyer.com",
-      "DOMAIN-SUFFIX,doubleclick.net",
-      "DOMAIN-SUFFIX,mmstat.com",
-      "DOMAIN-SUFFIX,vungle.com"
-    ]
   }
 }

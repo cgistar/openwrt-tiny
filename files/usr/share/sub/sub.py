@@ -221,63 +221,80 @@ def sub():
     return get_sub_respone(subinfo)
 
 
+def shell_crash_config(crash_dir, sub_urls=[]):
+    target = "singbox"
+    user_config = ""
+    sub_config = ""
+    crash_config = f"{crash_dir}/configs/ShellCrash.cfg"
+    with open(crash_config, "rt", encoding="utf-8") as f:
+        lines = f.readlines()
+        for line in lines:
+            if not sub_urls and line.startswith("Url="):
+                url = line[4:].replace("'", "").strip()
+                sub_urls = list(map(str.strip, url.split("|")))
+                print(f"使用配置文件中的转换订阅URL：{url}")
+            if line.startswith("crashcore="):
+                target = line[10:].strip()
+                if target in ("singboxp", "singbox"):
+                    sub_config = f"{crash_dir}/jsons/config.json"
+                    user_config = f"{crash_dir}/jsons/dns.json"
+                    target = "singbox"
+                elif target in ("clashpre", "meta", "clash"):
+                    sub_config = f"{crash_dir}/yamls/config.yaml"
+                    user_config = f"{crash_dir}/yamls/user.yamls"
+                    target = "clash"
+
+    if not sub_urls:
+        print("没有找到有效的订阅地址，请使用sub -url http://xxx.xx/1 的方式来调用，多个订阅地址空格分隔进行合并")
+        return
+    if not sub_config:
+        print("请先正确安装ShellCrash.")
+        return
+    if not os.path.exists(os.path.dirname(sub_config)):
+        os.mkdir(os.path.dirname(sub_config))
+
+    sub_url = "|".join(sub_urls)
+    subinfo = subconvert(sub_url, sub_urls, target=target)
+    sub_body = subinfo["body"]
+    sub_dns = sub_body.get("dns")
+
+    if subinfo["mimetype"] == "application/yaml":
+        if sub_dns:
+            sub_dns = {"dns": sub_dns, "rule-providers": sub_body.get("rule-providers")}
+            sub_dns = yaml.safe_dump(sub_dns, allow_unicode=True, sort_keys=False, default_flow_style=False)
+        sub_body = yaml.safe_dump(sub_body, allow_unicode=True, sort_keys=False, default_flow_style=False)
+    elif subinfo["mimetype"] == "application/json":
+        if sub_dns:
+            sub_dns = {"dns": sub_dns}
+            sub_dns = json.dumps(sub_dns, ensure_ascii=False, indent=2)
+        sub_body = json.dumps(sub_body, ensure_ascii=False, indent=2)
+    with open(sub_config, "wt", encoding="utf-8") as f:
+        print(f"已写入订阅配置: {sub_config}")
+        f.write(sub_body)
+
+    if sub_dns and not os.path.exists(user_config):
+        with open(user_config, "wt", encoding="utf-8") as f:
+            f.write(sub_dns)
+            print(f"已写入dns配置: {user_config}")
+
+
 if __name__ == "__main__":
     args = parser.parse_args()
     if args.web:
         app.run("0.0.0.0", args.port)
         sys.exit(0)
-    crash_dir = os.getenv("CRASHDIR") or os.path.dirname(os.path.abspath(__file__))
-    target = "singbox"
-    sub_urls = []
-    sub_config = ""
-    user_config = ""
-    port = 8080
+    cdir = os.path.dirname(os.path.abspath(__file__))
+    crash_dir = os.getenv("CRASHDIR") or os.getcwd()
     crash_config = f"{crash_dir}/configs/ShellCrash.cfg"
-    if os.path.exists(crash_config):
-        port = 25500
-        with open(crash_config, "rt", encoding="utf-8") as f:
-            lines = f.readlines()
-            for line in lines:
-                if line.startswith("Url="):
-                    url = line[4:].replace("'", "").strip()
-                    sub_urls = list(map(str.strip, url.split("|")))
-                if line.startswith("crashcore="):
-                    target = line[10:].strip()
-                    if target in ("singboxp", "singbox"):
-                        sub_config = f"{crash_dir}/jsons/config.json"
-                        user_config = f"{crash_dir}/jsons/dns.json"
-                        target = "singbox"
-                    elif target in ("clashpre", "meta", "clash"):
-                        sub_config = f"{crash_dir}/yamls/config.yaml"
-                        user_config = f"{crash_dir}/yamls/user.yamls"
-                        target = "clash"
+    if not os.path.exists(crash_config):
+        crash_config = os.getcwd()
+        if not os.path.exists(crash_config):
+            print(f"没有找到 ShellCrash，你还可以使用{cdir}/sub -web -p=25500 ，让 ShellCrash 以 127.0.0.1:25500 方式调用本订阅")
+            sys.exit(0)
 
+    print(f"找到ShellCrash配置文件: {crash_config}")
+    sub_urls = []
     if args.url:
-        print(args.url)
+        print(f"转换订阅URL：{args.url}")
         sub_urls = args.url
-
-    if sub_urls:
-        sub_url = "|".join(sub_urls)
-        subinfo = subconvert(sub_url, sub_urls, target=target)
-        if sub_config:
-            if not os.path.exists(os.path.dirname(sub_config)):
-                os.mkdir(os.path.dirname(sub_config))
-            sub_body = subinfo["body"]
-            sub_dns = sub_body.get("dns")
-
-            if subinfo["mimetype"] == "application/yaml":
-                if sub_dns:
-                    sub_dns = {"dns": sub_dns, "rule-providers": sub_body.get("rule-providers")}
-                    sub_dns = yaml.safe_dump(sub_dns, allow_unicode=True, sort_keys=False, default_flow_style=False)
-                sub_body = yaml.safe_dump(sub_body, allow_unicode=True, sort_keys=False, default_flow_style=False)
-            elif subinfo["mimetype"] == "application/json":
-                if sub_dns:
-                    sub_dns = {"dns": sub_dns}
-                    sub_dns = json.dumps(sub_dns, ensure_ascii=False, indent=2)
-                sub_body = json.dumps(sub_body, ensure_ascii=False, indent=2)
-            with open(sub_config, "wt", encoding="utf-8") as f:
-                f.write(sub_body)
-
-            if sub_dns:
-                with open(user_config, "wt", encoding="utf-8") as f:
-                    f.write(sub_dns)
+    shell_crash_config(crash_dir, sub_urls=sub_urls)

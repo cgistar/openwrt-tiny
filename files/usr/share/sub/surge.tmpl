@@ -1,0 +1,42 @@
+[General]
+loglevel = notify
+# 从 Surge iOS 4 / Surge Mac 3.3.0 起，工具开始支持 DoH
+# https://dns.alidns.com/dns-query, https://13800000000.rubyfish.cn/, https://dns.google/dns-query
+dns-server = 223.5.5.5, 119.29.29.29
+skip-proxy = 192.168.0.0/24, 10.0.0.0/8, 172.16.0.0/12, 127.0.0.1, localhost, *.local
+tun-excluded-routes = 192.168.0.0/16, 10.0.0.0/8, 172.16.0.0/12
+
+wifi-assist = true
+allow-wifi-access = true
+wifi-access-http-port = 6152
+wifi-access-socks5-port = 6153
+http-listen = 0.0.0.0:6152
+socks5-listen = 0.0.0.0:6153
+
+external-controller-access = 123456@0.0.0.0:6170
+http-api = 123456@127.0.0.1:6171
+http-api-web-dashboard = true
+
+ipv6 = false
+network-framework = false
+exclude-simple-hostnames = true
+
+test-timeout = 4
+internet-test-url = https://www.baidu.com
+proxy-test-url = http://www.gstatic.com/generate_204
+geoip-maxmind-url = https://unpkg.zhimg.com/rulestatic@1.0.1/Country.mmdb
+
+[Replica]
+hide-apple-request = true
+hide-crashlytics-request = true
+use-keyword-filter = false
+hide-udp = false
+
+# -----------------------------
+# Surge 的几种策略配置规范，请参考 https://manual.nssurge.com/policy/proxy.html
+# 不同的代理策略有*很多*可选参数，请参考上方连接的 Parameters 一段，根据需求自行添加参数。
+#
+# Surge 现已支持 UDP 转发功能，请参考: https://trello.com/c/ugOMxD3u/53-udp-%E8%BD%AC%E5%8F%91
+# Surge 现已支持 TCP-Fast-Open 技术，请参考: https://trello.com/c/ij65BU6Q/48-tcp-fast-open-troubleshooting-guide
+# Surge 现已支持 ss-libev 的全部加密方式和混淆，请参考: https://trello.com/c/BTr0vG1O/47-ss-libev-%E7%9A%84%E6%94%AF%E6%8C%81%E6%83%85%E5%86%B5
+# -----------------------------

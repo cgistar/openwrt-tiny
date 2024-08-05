@@ -245,11 +245,6 @@ class SingBox:
                     hosts.extend(rules["hosts"])
                 if rules.get("rule_set"):
                     hosts.extend(rules["rule_set"])
-        if self.config.get("ads_rule"):
-            if self.config["ads_rule"].get("hosts"):
-                hosts.extend(self.config["ads_rule"]["hosts"])
-            if self.config["ads_rule"].get("rule_set"):
-                hosts.extend(self.config["ads_rule"]["rule_set"])
 
         return utils.get_rule(hosts)
 
@@ -285,22 +280,6 @@ class SingBox:
         rule_files = self.download_rule_file()
         cfg_rules = []
 
-        # 载入内网直连规则
-        if "other_rules" in self.config:
-            for rules in self.config["other_rules"]:
-                add_rules = []
-                if "rule_set" in rules:
-                    for url in rules.get("rule_set"):
-                        filename = os.path.basename(url)
-                        if filename in rule_files:
-                            add_rules.extend(rule_files[filename])
-                if "rules" in rules:
-                    add_rules.extend(rules["rules"])
-                rule_list = self.format_rule(add_rules)
-                if rule_list:
-                    rule_list["outbound"] = rules["path"]
-                    cfg_rules.append(rule_list)
-
         # 载入配置文件中的规则
         default_proxy_name = ""  # 默认项
         if self.config.get("proxy_groups"):
@@ -326,6 +305,23 @@ class SingBox:
                 rule_list = self.format_rule(add_rules)
                 if rule_list:
                     rule_list["outbound"] = pxygrp["name"]
+                    cfg_rules.append(rule_list)
+
+        # 载入自定义规则
+        if "other_rules" in self.config:
+            for rules in self.config["other_rules"]:
+                outbound = default_proxy_name if rules["path"] == "PROXY" else rules["path"]
+                add_rules = []
+                if "rule_set" in rules:
+                    for url in rules.get("rule_set"):
+                        filename = os.path.basename(url)
+                        if filename in rule_files:
+                            add_rules.extend(rule_files[filename])
+                if "rules" in rules:
+                    add_rules.extend(rules["rules"])
+                rule_list = self.format_rule(add_rules)
+                if rule_list:
+                    rule_list["outbound"] = outbound
                     cfg_rules.append(rule_list)
 
         if fixed_node:
@@ -562,9 +558,10 @@ class Surge:
             for rules in self.config["other_rules"]:
                 if rules.get("hosts"):
                     hosts.extend(rules["hosts"])
-        if self.config.get("ads_rule"):
-            if self.config["ads_rule"].get("hosts"):
-                hosts.extend(self.config["ads_rule"]["hosts"])
+        if self.config.get("surge", {}).get("ads_rule"):
+            ads_rule = self.config["surge"]["ads_rule"]
+            if ads_rule.get("hosts"):
+                hosts.extend(ads_rule["hosts"])
         return utils.get_rule(hosts)
 
     def convert(self, params, nodes):
@@ -582,13 +579,10 @@ class Surge:
         config = configparser.RawConfigParser(allow_no_value=True)
         config.optionxform = str
         config.read(template_file, encoding="utf-8")
-        general_keys = ""
-        for key in general_keys.split(","):
-            if key in self.config:
-                config["General"][key] = self.config[key]
 
         if self.config.get("surge", {}).get("General"):
-            config["General"] = self.config["surge"]["General"]
+            for k, v in self.config["surge"]["General"].items():
+                config["General"][k] = v
         if not config["General"].get("dns_server"):
             config["General"]["dns_server"] = params.get("dns_server") or "system"
 
@@ -612,51 +606,28 @@ class Surge:
         rule_files = self.download_rule_file()
         cfg_rules = ["RULE-SET,LAN,DIRECT"]
 
-        # 载入内网直连规则
-        if "other_rules" in self.config:
-            for rules in self.config["other_rules"]:
-                add_rules = []
-                if "hosts" in rules:
-                    for url in rules["hosts"]:
-                        filename = os.path.basename(url)
-                        if filename in rule_files:
-                            add_rules.extend(rule_files[filename])
-                if "rules" in rules:
-                    add_rules.extend(rules["rules"])
-                rule_list, ip_rule_list = self.format_rule(add_rules)
-                for rule in rule_list:
-                    cfg_rules.append(rule % rules["path"])
-                for rule in ip_rule_list:
-                    cfg_rules.append(rule % rules["path"])
-
-                if "rule_set" in rules:
-                    for x in rules.get("rule_set"):
-                        cfg_rules.append("RULE-SET,{},{},update-interval=3600".format(x, rules["path"]))
-                if "domain_set" in rules:
-                    for x in rules.get("domain_set"):
-                        cfg_rules.append("DOMAIN-SET,{},{},update-interval=3600".format(x, rules["path"]))
-
         # 载入广告规则
-        if self.config.get("ads_rule"):
+        if self.config.get("surge", {}).get("ads_rule"):
+            ads_rule = self.config["surge"]["ads_rule"]
             rules = []
-            if self.config["ads_rule"].get("hosts"):
-                for url in self.config["ads_rule"]["hosts"]:
+            if ads_rule.get("hosts"):
+                for url in ads_rule["hosts"]:
                     filename = os.path.basename(url)
                     if filename in rule_files:
                         rules.extend(rule_files[filename])
-            if self.config["ads_rule"].get("rules"):
-                rules.extend(self.config["ads_rule"]["rules"])
+            if ads_rule.get("rules"):
+                rules.extend(ads_rule["rules"])
             rule_list, ip_rule_list = self.format_rule(rules)
             for rule in rule_list:
                 cfg_rules.append(rule % "REJECT-TINYGIF")
             for rule in ip_rule_list:
                 cfg_rules.append(rule % "REJECT-TINYGIF")
 
-            if "rule_set" in self.config["ads_rule"]:
-                for x in self.config["ads_rule"].get("rule_set"):
+            if "rule_set" in ads_rule:
+                for x in ads_rule.get("rule_set"):
                     cfg_rules.append(f"RULE-SET,{x},REJECT-TINYGIF,update-interval=43200")
-            if "domain_set" in self.config["ads_rule"]:
-                for x in self.config["ads_rule"].get("domain_set"):
+            if "domain_set" in ads_rule:
+                for x in ads_rule.get("domain_set"):
                     cfg_rules.append(f"DOMAIN-SET,{x},REJECT-TINYGIF,update-interval=43200")
 
         # 载入提供服务的站点直连规则
@@ -700,6 +671,31 @@ class Surge:
                 if "domain_set" in pxygrp:
                     for x in pxygrp.get("domain_set"):
                         cfg_rules.append("DOMAIN-SET,{},{},update-interval=43200".format(x, pxygrp["name"]))
+
+        # 载入内网直连规则
+        if "other_rules" in self.config:
+            for rules in self.config["other_rules"]:
+                outbound = default_proxy_name if rules["path"] == "PROXY" else rules["path"]
+                add_rules = []
+                if "hosts" in rules:
+                    for url in rules["hosts"]:
+                        filename = os.path.basename(url)
+                        if filename in rule_files:
+                            add_rules.extend(rule_files[filename])
+                if "rules" in rules:
+                    add_rules.extend(rules["rules"])
+                rule_list, ip_rule_list = self.format_rule(add_rules)
+                for rule in rule_list:
+                    cfg_rules.append(rule % outbound)
+                for rule in ip_rule_list:
+                    cfg_rules.append(rule % outbound)
+
+                if "rule_set" in rules:
+                    for x in rules.get("rule_set"):
+                        cfg_rules.append("RULE-SET,{},{},update-interval=3600".format(x, outbound))
+                if "domain_set" in rules:
+                    for x in rules.get("domain_set"):
+                        cfg_rules.append("DOMAIN-SET,{},{},update-interval=3600".format(x, outbound))
 
         config_rule = [rule for rule in cfg_rules]
         config_rule.append("GEOIP,CN,DIRECT")
@@ -1128,6 +1124,24 @@ class Mihomo:
                 result.pop(k)
         return result
 
+    def download_rule_file(self) -> dict:
+        """
+        获取规则配置文件
+        """
+        hosts = []
+        if self.config.get("proxy_groups"):
+            for x in self.config["proxy_groups"]:
+                if x.get("hosts"):
+                    hosts.extend(x["hosts"])
+        if "other_rules" in self.config:
+            for rules in self.config["other_rules"]:
+                if rules.get("hosts"):
+                    hosts.extend(rules["hosts"])
+                if rules.get("rule_set"):
+                    hosts.extend(rules["rule_set"])
+
+        return utils.get_rule(hosts)
+
     def init_headers(self, subinfo):
         """
         从源订阅网站获取订阅详情
@@ -1214,12 +1228,12 @@ class Mihomo:
             "IP-CIDR,198.18.0.1/16,REJECT,no-resolve",
             "GEOIP,private,DIRECT,no-resolve",
         ]
+        rule_files = self.download_rule_file()
         for x in domains:
             cfg_rules.append(f"DOMAIN-SUFFIX,{x},DIRECT")
         for x in svrips:
             cfg_rules.append(f"IP-CIDR,{x}/32,DIRECT,no-resolve")
         cfg_rules.extend(self.rules_local_netware())
-        unique_check = set()
         cfg = self.rule_config()
         if cfg.get("ws-opts"):
             # 如果存在免流配置，就更新vmess 80端口且ws协议的免流参数
@@ -1245,21 +1259,24 @@ class Mihomo:
                 rules = self.get_rule(files=files, rules=group_rules)
                 if rules:
                     for r in rules:
-                        if r in unique_check:
-                            continue
-                        unique_check.add(r)
                         cfg_rules.append(r % x["name"])
-        if cfg.get("rule-providers"):
-            for k, v in cfg["rule-providers"].items():
-                provider = v
-                provider.setdefault("interval", 3600)
-                proxy = "DIRECT"
-                if provider.get("proxy"):
-                    proxy = provider.pop("proxy")
-                if proxy.lower() == "proxy":
-                    proxy = default_proxy
-                cfg_rules.append("RULE-SET,{},{}".format(k, proxy))
-                cfg_providers[k] = provider
+        # 载入自定义规则
+        if "other_rules" in cfg:
+            for rules in cfg["other_rules"]:
+                outbound = default_proxy if rules["path"] == "PROXY" else rules["path"]
+                add_rules = []
+                if "rule_set" in rules:
+                    for url in rules.get("rule_set"):
+                        filename = os.path.basename(url)
+                        if filename in rule_files:
+                            add_rules.extend(rule_files[filename])
+                if "rules" in rules:
+                    add_rules.extend(rules["rules"])
+                rule_list, ip_rule_list = self.format_rule(add_rules)
+                for rule in rule_list:
+                    cfg_rules.append(rule % outbound)
+                for rule in ip_rule_list:
+                    cfg_rules.append(rule % outbound)
         if cfg.get("mihomo", {}).get("rule-providers"):
             for k, v in cfg["mihomo"]["rule-providers"].items():
                 provider = v
@@ -1278,9 +1295,18 @@ class Mihomo:
 
         content["proxy-groups"] = self._clash_proxy_groups(content["proxies"], cfg_groups)
 
+        # 唯一检查
+        unique_check = set()
+        unique_rules = []
+        for rule in cfg_rules:
+            if rule in unique_check:
+                continue
+            unique_check.add(rule)
+            unique_rules.append(rule)
+
         if cfg_providers:
             content["rule-providers"] = cfg_providers
-        content["rules"] = cfg_rules
+        content["rules"] = unique_rules
         content["rules"].extend(self.rules_suffix(default_proxy))
 
         return {"headers": self._headers, "body": content, "mimetype": "application/yaml"}
@@ -1663,6 +1689,24 @@ class Clash:
                 result.pop(k)
         return result
 
+    def download_rule_file(self) -> dict:
+        """
+        获取规则配置文件
+        """
+        hosts = []
+        if self.config.get("proxy_groups"):
+            for x in self.config["proxy_groups"]:
+                if x.get("hosts"):
+                    hosts.extend(x["hosts"])
+        if "other_rules" in self.config:
+            for rules in self.config["other_rules"]:
+                if rules.get("hosts"):
+                    hosts.extend(rules["hosts"])
+                if rules.get("rule_set"):
+                    hosts.extend(rules["rule_set"])
+
+        return utils.get_rule(hosts)
+
     def init_headers(self, subinfo):
         """
         从源订阅网站获取订阅详情
@@ -1740,9 +1784,9 @@ class Clash:
         domains = {".".join(x.split(".")[-2:]) for x in servers - svrips if x}
 
         # 根据配置文件调整
+        rule_files = self.download_rule_file()
         default_proxy = ""
         cfg_groups = []
-        cfg_providers = {}
         cfg_rules = [
             "IP-CIDR,198.18.0.1/16,REJECT,no-resolve",
             "GEOIP,private,DIRECT,no-resolve",
@@ -1752,7 +1796,6 @@ class Clash:
         for x in svrips:
             cfg_rules.append(f"IP-CIDR,{x}/32,DIRECT,no-resolve")
         cfg_rules.extend(self.rules_local_netware())
-        unique_check = set()
         cfg = self.rule_config()
         if cfg.get("ws-opts"):
             # 如果存在免流配置，就更新vmess 80端口且ws协议的免流参数
@@ -1761,15 +1804,6 @@ class Clash:
                     p["ws-opts"].update(cfg["ws-opts"])
                     p["ws-opts"] = self.cleanNullNode(p["ws-opts"])
             # result["proxies"] = json.loads(json.dumps(result["proxies"]))
-        if cfg.get("rule-providers"):
-            for k, v in cfg["rule-providers"].items():
-                provider = v
-                provider.setdefault("interval", 3600)
-                proxy = "DIRECT"
-                if provider.get("proxy"):
-                    proxy = provider.pop("proxy")
-                cfg_rules.append("RULE-SET,{},{}".format(k, proxy))
-                cfg_providers[k] = provider
         if cfg.get("proxy_groups"):
             cfg_groups = cfg["proxy_groups"]
             for x in cfg_groups:
@@ -1787,10 +1821,24 @@ class Clash:
                 rules = self.get_rule(files=files, rules=group_rules)
                 if rules:
                     for r in rules:
-                        if r in unique_check:
-                            continue
-                        unique_check.add(r)
                         cfg_rules.append(r % x["name"])
+        # 载入自定义规则
+        if "other_rules" in cfg:
+            for rules in cfg["other_rules"]:
+                outbound = default_proxy if rules["path"] == "PROXY" else rules["path"]
+                add_rules = []
+                if "rule_set" in rules:
+                    for url in rules.get("rule_set"):
+                        filename = os.path.basename(url)
+                        if filename in rule_files:
+                            add_rules.extend(rule_files[filename])
+                if "rules" in rules:
+                    add_rules.extend(rules["rules"])
+                rule_list, ip_rule_list = self.format_rule(add_rules)
+                for rule in rule_list:
+                    cfg_rules.append(rule % outbound)
+                for rule in ip_rule_list:
+                    cfg_rules.append(rule % outbound)
         if cfg.get("dns"):
             content["dns"] = cfg["dns"]
         else:
@@ -1798,9 +1846,15 @@ class Clash:
 
         content["proxy-groups"] = self._clash_proxy_groups(content["proxies"], cfg_groups)
 
-        if cfg_providers:
-            content["rule-providers"] = cfg_providers
-        content["rules"] = cfg_rules
+        # 唯一检查
+        unique_check = set()
+        unique_rules = []
+        for rule in cfg_rules:
+            if rule in unique_check:
+                continue
+            unique_check.add(rule)
+            unique_rules.append(rule)
+        content["rules"] = unique_rules
         content["rules"].extend(self.rules_suffix(default_proxy))
 
         return {"headers": self._headers, "body": content, "mimetype": "application/yaml"}
