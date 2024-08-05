@@ -131,11 +131,15 @@ def get(url):
     encoding = "utf-8"
 
     logger.info(f"GET {url}")
-    response = _get(url)
-    if not response.ok:
-        err = f"获取订阅失败 {url}"
+    err = f"不能访问 {url}"
+    try:
+        response = _get(url, timeout=5)
+    except Exception:
         logger.info(err)
-        raise ValueError(err)
+        return
+    if not response.ok:
+        logger.info(err)
+        return
 
     if response.encoding and response.encoding != "ISO-8859-1":
         encoding = response.encoding
@@ -207,7 +211,7 @@ def get_rule(hosts):
     loop.run_until_complete(asyncio.gather(*tasks))
     files = [task.result() for task in tasks]
     for filepath in files:
-        if not os.path.exists(filepath):
+        if not filepath or not os.path.exists(filepath):
             continue
         # 从下载的文件中读取配置项
         with open(filepath, "rt", encoding="utf-8") as f:

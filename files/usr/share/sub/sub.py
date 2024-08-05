@@ -11,13 +11,12 @@ import time
 import traceback
 from urllib.parse import urlsplit
 
-import yaml
-from flask import Flask, Response, request
-from werkzeug.exceptions import HTTPException
-
 import utils
-from clients import Mihomo, SingBox, Surge
+import yaml
+from clients import Clash, Mihomo, SingBox, Surge
+from flask import Flask, Response, request
 from protocols import Hysteria2, Shadowsocks, Trojan, XRay
+from werkzeug.exceptions import HTTPException
 
 LOG_FORMAT = "%(asctime)s %(levelname)s: %(message)s"
 logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
@@ -123,9 +122,12 @@ def subconvert(url: str, urls: list, target: str = None, fixed_node: str = None)
         "fixed_node": fixed_node,
     }
     result = {}
-    if target == "clash":
+    if target == "clash.meta":
         clashMeta = Mihomo()
         result = clashMeta.convert(params, nodes)
+    if target == "clash":
+        clash = Clash()
+        result = clash.convert(params, nodes)
     elif target == "surge":
         surge = Surge()
         result = surge.convert(params, nodes)
@@ -239,9 +241,13 @@ def shell_crash_config(crash_dir, sub_urls=[]):
                     sub_config = f"{crash_dir}/jsons/config.json"
                     user_config = f"{crash_dir}/jsons/dns.json"
                     target = "singbox"
-                elif target in ("clashpre", "meta", "clash"):
+                elif target in ("clashpre", "meta"):
                     sub_config = f"{crash_dir}/yamls/config.yaml"
-                    user_config = f"{crash_dir}/yamls/user.yamls"
+                    user_config = f"{crash_dir}/yamls/user.yaml"
+                    target = "clash.meta"
+                elif target == "clash":
+                    sub_config = f"{crash_dir}/yamls/config.yaml"
+                    user_config = f"{crash_dir}/yamls/user.yaml"
                     target = "clash"
 
     if not sub_urls:
@@ -260,7 +266,7 @@ def shell_crash_config(crash_dir, sub_urls=[]):
 
     if subinfo["mimetype"] == "application/yaml":
         if sub_dns:
-            sub_dns = {"dns": sub_dns, "rule-providers": sub_body.get("rule-providers")}
+            sub_dns = {"dns": sub_dns}
             sub_dns = yaml.safe_dump(sub_dns, allow_unicode=True, sort_keys=False, default_flow_style=False)
         sub_body = yaml.safe_dump(sub_body, allow_unicode=True, sort_keys=False, default_flow_style=False)
     elif subinfo["mimetype"] == "application/json":
@@ -295,6 +301,6 @@ if __name__ == "__main__":
     print(f"找到ShellCrash配置文件: {crash_config}")
     sub_urls = []
     if args.url:
-        print(f"转换订阅URL：{args.url}")
+        print("转换订阅URL：{}".format(" ".join(args.url)))
         sub_urls = args.url
     shell_crash_config(crash_dir, sub_urls=sub_urls)
