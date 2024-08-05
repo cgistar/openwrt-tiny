@@ -273,7 +273,7 @@
       "proxies": ["♻️ 自动选择", "🔰 节点选择", "🔰 组选择", "@节点组"],
       "rule_set": ["netflix", "netflixip"],
       "skip_resolve": true,
-      "hosts": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Netflix.list"]
+      "hosts": ["https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Netflix.list"]
     },
     {
       "name": "📽️ 迪士尼+",
@@ -426,8 +426,8 @@
     },
     {
       "path": "DIRECT",
-      "hosts": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list"],
-      "rule_set": ["https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list"],
+      "hosts": ["https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list"],
+      "rule_set": ["https://mirror.ghproxy.com/https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list"],
       "rules": [
         "USER-AGENT,MicroMessenger Client*",
         "USER-AGENT,WeChat*",
