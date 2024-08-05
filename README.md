@@ -35,7 +35,7 @@ sh /usr/share/sub/install_sc.sh
 
 ### WEB调用方法
 ```sh
-python3 /usr/share/sub/sub.py -web -p=25500
+nohup python3 /usr/share/sub/sub.py -web -p=25500 2>&1 >>/dev/null &
 ```
 
 ## DNS配置文件在$CRASHDIR/jsons/dns.json
