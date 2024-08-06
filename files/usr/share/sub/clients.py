@@ -7,11 +7,11 @@ import json
 import logging
 import os
 import re
+import sys
 from urllib.parse import parse_qsl, quote, unquote, urlsplit, urlunsplit
 
-import yaml
-
 import utils
+import yaml
 
 logger = logging.getLogger()
 
@@ -41,7 +41,7 @@ def ordered_yaml_dump(data, stream=None, Dumper=yaml.SafeDumper, object_pairs_ho
 
 class SingBox:
     def __init__(self) -> None:
-        config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+        config_file = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "config.json")
         self.test_url = "http://www.gstatic.com/generate_204"
         self.test_interval = 43200
         self._headers = {}
@@ -360,7 +360,7 @@ class SingBox:
 
 class Surge:
     def __init__(self) -> None:
-        config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+        config_file = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "config.json")
         self.test_url = "http://www.gstatic.com/generate_204"
         self.test_interval = 43200
         self._headers = {}
@@ -752,7 +752,7 @@ class Mihomo:
     def __init__(self, fileName=None) -> None:
         self._headers = {}
         self.test_interval = 14400
-        config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+        config_file = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "config.json")
         with open(config_file, "rt", encoding="utf-8") as f:
             self.config = json.load(f)
             self.countrys = {}
@@ -1317,7 +1317,7 @@ class Clash:
         self._platform = "undefine"
         self._headers = {}
         self.test_interval = 14400
-        config_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "config.json")
+        config_file = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "config.json")
         with open(config_file, "rt", encoding="utf-8") as f:
             self.config = json.load(f)
             self.countrys = {}
