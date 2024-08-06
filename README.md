@@ -1,17 +1,21 @@
 # openwrt-tiny
-openwrt x86_64旁路由专用，仅保留ZeroTier WireGuard ttyd lucky ShellCrash
+openwrt x86_64旁路由专用，仅保留ZeroTier WireGuard ttyd lucky ShellCrash，有关openwrt的问题不要问我，我也不懂，这是自用的，通过PVE或EXSI运行，开发它的目的仅仅是能快速的部署好我需要的旁路由。
 
 - IP地址：192.168.5.100
 - 用户名：root
 - 密码：无密码
 - 固件下载: [Releases](https://github.com/cgistar/openwrt-tiny/releases)
 
-## ShellCrash 安装
-安装文件在`/opt/ShellCrash`下，进入系统-TTYD终端，在里面运行：
+## ShellCrash 离线配置
+已经预先将安装文件保存到了`/etc/ShellCrash`，但还需要进行配置，进入系统-TTYD终端后，在里面运行：
 ```sh
 sh /usr/share/sub/install_sc.sh
 ```
-按需选择进行安装
+
+### 自行安装配置
+```sh
+source /etc/ShellCrash/init.sh
+```
 
 ### 预安装项目：
 1. Sing-Box-Puer内核
@@ -20,22 +24,31 @@ sh /usr/share/sub/install_sc.sh
 4. DNS配置来自 [sing-box PuerNya 版内核配置 DNS 不泄露教程-ruleset 方案](https://github.com/DustinWin/clash_singbox-tutorials/blob/main/%E6%95%99%E7%A8%8B%E5%90%88%E9%9B%86/sing-box/%E8%BF%9B%E9%98%B6%E7%AF%87/sing-box%20PuerNya%20%E7%89%88%E5%86%85%E6%A0%B8%E9%85%8D%E7%BD%AE%20DNS%20%E4%B8%8D%E6%B3%84%E9%9C%B2%E6%95%99%E7%A8%8B-ruleset%20%E6%96%B9%E6%A1%88.md)，做了部分修改
 5. 去除了fake-ip有需要的自己加入
 
-## ShellCrash 订阅转换
-开发了与ShellCrash兼容的订阅WEB服务，提供直接转换订阅、提供127.0.0.1:25500的WEB订阅转换服务
-### 直接转换订阅链接（推荐）
+## 订阅转换
+ShellCrash订阅配置非常麻烦，提供的线上转换功能也不符合我的要求，所以自己写了一个转换程序，同时提供订阅WEB服务，**可能只适配部分订阅链接**。
+### 直接 ShellCrash 转换订阅链接（推荐）
 ```sh
-/usr/share/sub/sub.py -url http://aa.aa.com/api/v1/client/subscribe?token=feed5  http://bb.bb.com/api/v1/client/subscribe?token=dsfd
+# 直接运行，系统会自动查找 ShellCrash 的订阅链接进行订阅转换
+/usr/share/sub/sub.py
+
+# 不使用配置项中的订阅链接，通过参数进行调用
+/usr/share/sub/sub.py -url http://aa.aa.com/api/v1/client/subscribe?token=feed5 http://bb.bb.com/api/v1/client/subscribe?token=dsfd
 ```
 - 需要python3环境（openwrt已自带），自己建立环境需要安装一些依赖`pip install -r requirements.txt`
-- 支持多个订阅合并
-- 修改 /usr/share/sub/config.json 可以自己定制化
-- 傻瓜化运行，只要提供订阅链接，将自动将配置文件保存到ShellCrash安装文件夹下，同时也会生成DNS配置
+- 支持多个订阅合并，空格分隔
+- 修改 /usr/share/sub/config.json 定制化自己的需求
+- 傻瓜化运行，只要提供订阅链接，将自动将配置文件保存到ShellCrash安装文件夹下
+- $CRASHDIR/jsons/dns.json 或 $CRASHDIR/yamls/user.yaml，没有会自动生成，dns_nameserver、dns_fallback需要设置为null
 - clash 与 meta 核心互相变更时，请自行删除$CRASHDIR/yamls/user.yaml，clash不支持rule-set
 - 因为clash支持的协议较少，部分订阅将因为没有站点而转换出来的配置不能启动
 
-### WEB调用方法
+### 订阅后台服务运行
 ```sh
 nohup python3 /usr/share/sub/sub.py -web -p=25500 2>&1 >>/dev/null &
+```
+它不仅仅只能ShellCrash使用，通过参数target进行识别: singbox clash clash.meta surge
+```
+http://127.0.0.1:25500?url=http://aa.aa.com/api/v1/client/subscribe?token=feed5&target=clash.meta
 ```
 
 ## 固件来源：

@@ -60,7 +60,6 @@ fi
 if [ ! -f $CRASHDIR/CrashCore.tar.gz -a -f $BASEDIR/singboxp-linux-amd64.tar.gz ]; then
     cp -f $BASEDIR/singboxp-linux-amd64.tar.gz $CRASHDIR/CrashCore.tar.gz
     echo -e "Sing-Box-Puer内核 \033[32m安装成功！\033[0m"
-    echo -e "提供订阅转换工具，使用方法: /usr/share/sub/sub.py http://www.订阅1.com http://订阅2.com ..."
 fi
 
 if [ -z "$(grep 'crashcore=singbox' ${CRASHDIR}/configs/ShellCrash.cfg)" ]; then
@@ -77,6 +76,7 @@ if [ ! -d $CRASHDIR/ui -a -f $BASEDIR/meta_yacd.tar.gz ]; then
     tar -zxf $BASEDIR/meta_yacd.tar.gz -C $CRASHDIR/ui
     echo -e "yacd ui 面板 \033[32m安装成功！\033[0m"
 fi
+echo -e "订阅转换使用方法: /usr/share/sub/sub.py -url http://www.订阅1.com http://订阅2.com ..."
 
 [ -f ${CRASHDIR}/ui/index.html ] && [ -n "$(grep yacd ${CRASHDIR}/ui/index.html)" ] && setyacdip
 
