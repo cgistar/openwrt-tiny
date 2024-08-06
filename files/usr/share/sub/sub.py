@@ -293,14 +293,15 @@ if __name__ == "__main__":
     crash_dir = os.getenv("CRASHDIR") or os.getcwd()
     crash_config = f"{crash_dir}/configs/ShellCrash.cfg"
     if not os.path.exists(crash_config):
-        crash_config = os.getcwd()
-        if not os.path.exists(crash_config):
-            print(f"没有找到 ShellCrash，你还可以使用{cdir}/sub -web -p=25500 ，让 ShellCrash 以 127.0.0.1:25500 方式调用本订阅")
-            sys.exit(0)
+        crash_config = f"{os.getcwd()}/configs/ShellCrash.cfg"
 
-    print(f"找到ShellCrash配置文件: {crash_config}")
-    sub_urls = []
-    if args.url:
-        print("转换订阅URL：{}".format(" ".join(args.url)))
-        sub_urls = args.url
-    shell_crash_config(crash_dir, sub_urls=sub_urls)
+    if os.path.exists(crash_config):
+        print(f"找到ShellCrash配置文件: {crash_config}")
+        sub_urls = []
+        if args.url:
+            print("转换订阅URL：{}".format(" ".join(args.url)))
+            sub_urls = args.url
+        shell_crash_config(crash_dir, sub_urls=sub_urls)
+        sys.exit(0)
+
+    app.run("0.0.0.0", args.port)
