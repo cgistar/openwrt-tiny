@@ -29,10 +29,10 @@ ShellCrash订阅配置非常麻烦，提供的线上转换功能也不符合我�
 ### 直接 ShellCrash 转换订阅链接（推荐）
 ```sh
 # 直接运行，系统会自动查找 ShellCrash 的订阅链接进行订阅转换
-/usr/share/sub/sub.py
+/usr/share/sub/sub
 
 # 不使用配置项中的订阅链接，通过参数进行调用
-/usr/share/sub/sub.py -url http://aa.aa.com/api/v1/client/subscribe?token=feed5 http://bb.bb.com/api/v1/client/subscribe?token=dsfd
+/usr/share/sub/sub -t singbox -url http://aa.aa.com/api/v1/client/subscribe?token=feed5 http://bb.bb.com/api/v1/client/subscribe?token=dsfd
 ```
 - 需要python3环境（openwrt已自带），自己建立环境需要安装一些依赖`pip install -r requirements.txt`
 - 支持多个订阅合并，空格分隔
@@ -44,7 +44,7 @@ ShellCrash订阅配置非常麻烦，提供的线上转换功能也不符合我�
 
 ### 订阅后台服务运行
 ```sh
-nohup python3 /usr/share/sub/sub.py -web -p=25500 2>&1 >>/dev/null &
+nohup /usr/share/sub/sub -web -p=25500 2>&1 >>/dev/null &
 ```
 它不仅仅只能ShellCrash使用，通过参数target进行识别: singbox clash clash.meta surge
 ```

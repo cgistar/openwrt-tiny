@@ -27,6 +27,7 @@ sed -i '/customized in this file/a net.netfilter.nf_conntrack_max=165535' packag
 mkdir -p files/etc/ShellCrash/ui
 curl -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/ShellCrash.tar.gz | tar -zxC files/etc/ShellCrash
 curl -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/dashboard/meta_yacd.tar.gz | tar -zxC files/etc/ShellCrash/ui
+curl -fsSL https://github.com/cgistar/openwrt-tiny/releases/download/20240806/sub-openwrt-x86_64.tar.gz | tar -zxC files/usr/share/sub
 curl -o files/etc/ShellCrash/CrashCore.tar.gz -fsSL https://raw.githubusercontent.com/juewuy/ShellCrash/master/bin/singboxp/singbox-linux-amd64.tar.gz
 chmod +x files/usr/share/sub/install_sc.sh
-chmod +x files/usr/share/sub/sub.py
+chmod +x files/usr/share/sub/sub
