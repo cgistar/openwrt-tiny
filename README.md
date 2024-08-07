@@ -25,7 +25,14 @@ source /etc/ShellCrash/init.sh
 5. 去除了fake-ip有需要的自己加入
 
 ## 订阅转换
-ShellCrash订阅配置非常麻烦，提供的线上转换功能也不符合我的要求，所以自己写了一个转换程序，同时提供订阅WEB服务，**可能只适配部分订阅链接**。
+ShellCrash订阅配置非常麻烦，提供的线上转换功能也不符合我的要求，所以自己写了一个转换程序，同时提供订阅WEB服务，**我只测试了自己买的订阅，可能这个方式不适合你**。
+
+支持转换的订阅类型：
+- clash
+- clash.meta
+- sing-box
+- surge
+
 ### 直接 ShellCrash 转换订阅链接（推荐）
 ```sh
 # 直接运行，系统会自动查找 ShellCrash 的订阅链接进行订阅转换
@@ -34,9 +41,9 @@ ShellCrash订阅配置非常麻烦，提供的线上转换功能也不符合我�
 # 不使用配置项中的订阅链接，通过参数进行调用
 /usr/share/sub/sub -t singbox -url http://aa.aa.com/api/v1/client/subscribe?token=feed5 http://bb.bb.com/api/v1/client/subscribe?token=dsfd
 ```
-- 需要python3环境（openwrt已自带），自己建立环境需要安装一些依赖`pip install -r requirements.txt`
+- 源代码在sub目录下，安装依赖`pip install -r requirements.txt`
 - 支持多个订阅合并，空格分隔
-- 修改 /usr/share/sub/config.json 定制化自己的需求
+- 修改 /usr/share/sub/setting.json 定制化自己的需求
 - 傻瓜化运行，只要提供订阅链接，将自动将配置文件保存到ShellCrash安装文件夹下
 - $CRASHDIR/jsons/dns.json 或 $CRASHDIR/yamls/user.yaml，没有会自动生成，dns_nameserver、dns_fallback需要设置为null
 - clash 与 meta 核心互相变更时，请自行删除$CRASHDIR/yamls/user.yaml，clash不支持rule-set
