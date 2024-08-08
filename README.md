@@ -27,7 +27,7 @@ source /etc/ShellCrash/init.sh
 ## 订阅转换
 ShellCrash订阅配置非常麻烦，提供的线上转换功能也不符合我的要求，所以自己写了一个转换程序，同时提供订阅WEB服务，**我只测试了自己买的订阅，可能这个方式不适合你**。
 
-[下载windows编译直接运行版](https://github.com/cgistar/openwrt-tiny/releases/tag/20240806)，源代码在sub目录下，支持转换的订阅类型：
+[下载windows编译直接运行版](https://github.com/cgistar/openwrt-tiny/tree/main/sub/bin)，源代码在sub目录下，支持转换的订阅类型：
 - clash
 - clash.meta
 - sing-box
