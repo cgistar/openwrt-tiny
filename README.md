@@ -39,9 +39,9 @@ ShellCrash订阅配置非常麻烦，提供的线上转换功能也不符合我�
 /usr/share/sub/sub
 
 # 不使用配置项中的订阅链接，通过参数进行调用
-/usr/share/sub/sub -t singbox -url http://aa.aa.com/api/v1/client/subscribe?token=feed5 http://bb.bb.com/api/v1/client/subscribe?token=dsfd
+/usr/share/sub/sub -t singbox -url http://aa.aa.com/api/v1/client/subscribe?token=feed5|http://bb.bb.com/api/v1/client/subscribe?token=dsfd
 ```
-- 支持多个订阅合并，空格分隔
+- 支持多个订阅合并，中间以 | 分隔
 - 修改 /usr/share/sub/setting.json 定制化自己的需求
 - 傻瓜化运行，只要提供订阅链接，将自动将配置文件保存到ShellCrash安装文件夹下
 - $CRASHDIR/jsons/dns.json 或 $CRASHDIR/yamls/user.yaml，没有会自动生成，dns_nameserver、dns_fallback需要设置为null
@@ -54,7 +54,7 @@ nohup /usr/share/sub/sub -web -p=25500 2>&1 >>/dev/null &
 ```
 它不仅仅只能ShellCrash使用，通过参数target进行识别: singbox clash clash.meta surge
 ```
-http://127.0.0.1:25500?url=http://aa.aa.com/api/v1/client/subscribe?token=feed5&target=clash.meta
+http://127.0.0.1:25500/sub?url=http://aa.aa.com/api/v1/client/subscribe?token=feed5&target=clash.meta
 ```
 
 ## 固件来源：
