@@ -12,6 +12,7 @@ import socket
 import tempfile
 import time
 from concurrent.futures import ThreadPoolExecutor
+from urllib.parse import unquote
 
 import requests
 
@@ -146,13 +147,27 @@ def get(url):
     elif response.apparent_encoding and response.apparent_encoding != "ISO-8859-1":
         encoding = response.apparent_encoding
 
-    header_keys = "content-disposition subscription-userinfo profile-update-interval profile-web-page-url".split()
+    header_keys = "content-disposition subscription-userinfo profile-update-interval profile-web-page-url Content-Disposition Subscription-Userinfo Profile-Update-Interval Profile-Web-Page-Url".split()
     headers = {k.lower(): v for k, v in response.headers.items() if k in header_keys}
     result = {
         "url": url,
         "headers": headers,
         "content": response.content.decode(encoding, "ignore"),
     }
+    if "content-disposition" in headers:
+        contentDisposition = headers["content-disposition"]
+        filename = re.findall("filename\\u002A=[a-zA-z]+-[8]''(.+)", contentDisposition)
+        if filename:
+            attachment = unquote(filename[0])
+            result["headers"]["filename"] = attachment
+
+            content_disposition_filename = filename[0]
+            if content_disposition_filename != attachment:
+                result["headers"]["content-disposition"] = (
+                    f"attachment; filename*=utf-8''{content_disposition_filename}"
+                )
+            else:
+                result["headers"]["content-disposition"] = 'attachment; filename={}'.format(attachment)
     if "subscription-userinfo" in headers:
         subscriptionUserinfo = headers["subscription-userinfo"]
         userinfo = {}
@@ -166,7 +181,7 @@ def get(url):
         userinfo["balance"] = round(userinfo["total"] - userinfo["upload"] - userinfo["download"], 2)
         dt = datetime.datetime.fromtimestamp(userinfo.get("expire", 0))
         userinfo["expire"] = dt.strftime("%Y-%m-%d %H:%M:%S")
-        result["userinfo"] = userinfo
+        result["headers"]["userinfo"] = userinfo
 
     # 将原订阅数据保存到缓存
     with open(filepath, "wt", encoding="utf-8") as f:
@@ -207,7 +222,7 @@ def get_rule(hosts):
     cwd = "{}/{}".format(_tmpdir, ctime)
     if not os.path.exists(cwd):
         os.mkdir(cwd)
-    tasks = [asyncio.ensure_future(run(loop, download_rule, url, cwd)) for url in hosts]
+    tasks = [asyncio.ensure_future(run(loop, download_rule, url, cwd)) for url in set(hosts)]
     loop.run_until_complete(asyncio.gather(*tasks))
     files = [task.result() for task in tasks]
     for filepath in files:

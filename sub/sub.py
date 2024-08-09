@@ -23,9 +23,9 @@ logging.basicConfig(level=logging.INFO, format=LOG_FORMAT)
 logger = logging.getLogger()
 _tmpdir = tempfile.gettempdir()
 parser = argparse.ArgumentParser(description="简易订阅转换器")
-parser.add_argument("-v", action="version", version="%(prog)s version : v0.01", help="显示版本")
-parser.add_argument("-url", nargs="+", help="订单的原始URL 多个以空格分开")
-parser.add_argument("-t", "--target", dest="target", default="singbox", choices=["singbox", "clash"])
+parser.add_argument("-v", action="version", version="%(prog)s version : v0.02", help="显示版本")
+parser.add_argument("-url", dest="url", help="订单的原始URL 多个以|分开")
+parser.add_argument("-t", "--target", dest="target")
 parser.add_argument("-p", dest="port", type=int, default=8080)
 parser.add_argument("-web", action="store_true", help="以WEB方式启动，默认端口：8080")
 app = Flask(__name__)
@@ -95,7 +95,8 @@ def get_subscribe(url):
 
 def subconvert(url: str, urls: list, target: str = None, fixed_node: str = None) -> dict:
     ctime = time.strftime("%Y%m%d%H%M", time.localtime())
-    filename = f"{utils.md5(url)}_{ctime}.json"
+    filename = f"{url}.{target}"
+    filename = f"{utils.md5(filename)}_{ctime}.json"
     filepath = os.path.join(_tmpdir, filename)
     # 从缓存中获取订阅数据
     if os.path.exists(filepath):
@@ -217,7 +218,7 @@ def convert():
 def sub():
     target = request.args.get("target", "clash")
     url = request.url
-    urls = request.args.getlist("url")
+    urls = list(map(str.strip, request.args["url"].split("|")))
     fixed_node = request.args.get("fixed_node")
     subinfo = subconvert(url, urls, target, fixed_node)
     return get_sub_respone(subinfo)
@@ -228,30 +229,54 @@ def shell_crash_config(crash_dir, sub_urls=[]):
     user_config = ""
     sub_config = ""
     crash_config = f"{crash_dir}/configs/ShellCrash.cfg"
+    url = ""
+    crashcore = ""
     with open(crash_config, "rt", encoding="utf-8") as f:
         lines = f.readlines()
         for line in lines:
             if not sub_urls and line.startswith("Url="):
                 url = line[4:].replace("'", "").strip()
-                sub_urls = list(map(str.strip, url.split("|")))
-                print(f"使用配置文件中的转换订阅URL：{url}")
             if line.startswith("crashcore="):
-                target = line[10:].strip()
-                if target in ("singboxp", "singbox"):
-                    sub_config = f"{crash_dir}/jsons/config.json"
-                    user_config = f"{crash_dir}/jsons/dns.json"
-                    target = "singbox"
-                elif target in ("clashpre", "meta"):
-                    sub_config = f"{crash_dir}/yamls/config.yaml"
-                    user_config = f"{crash_dir}/yamls/user.yaml"
-                    target = "clash.meta"
-                elif target == "clash":
-                    sub_config = f"{crash_dir}/yamls/config.yaml"
-                    user_config = f"{crash_dir}/yamls/user.yaml"
-                    target = "clash"
+                crashcore = line[10:].strip()
+
+    # 检查订阅链接
+    if sub_urls:
+        print(f"使用参数传入的订阅URL")
+    elif url:
+        sub_urls = list(map(str.strip, url.split("|")))
+        print(f"使用配置文件中的订阅URL：{url}")
+    else:
+        input_url = input("配置中没有订阅地址，请输入（多个以 | 分隔）：")
+        if not input_url or not input_url.startswith("http"):
+            print("无效的订阅URL")
+            return
+        sub_urls = list(map(str.strip, input_url.split("|")))
+
+    # 检查订阅输出格式
+    if not crashcore:
+        targets = ["singbox", "clash", "meta"]
+        crashcore = input("订阅输出格式{}，[singbox]：".format(", ".join(targets)))
+        if not crashcore:
+            crashcore = "singbox"
+        if crashcore not in targets:
+            print("订阅输出格式必须是{}其中之一".format(", ".join(targets)))
+            return
+
+    if crashcore in ("singboxp", "singbox"):
+        sub_config = f"{crash_dir}/jsons/config.json"
+        user_config = f"{crash_dir}/jsons/dns.json"
+        target = "singbox"
+    elif crashcore in ("clashpre", "meta"):
+        sub_config = f"{crash_dir}/yamls/config.yaml"
+        user_config = f"{crash_dir}/yamls/user.yaml"
+        target = "clash.meta"
+    elif crashcore == "clash":
+        sub_config = f"{crash_dir}/yamls/config.yaml"
+        user_config = f"{crash_dir}/yamls/user.yaml"
+        target = "clash"
 
     if not sub_urls:
-        print("没有找到有效的订阅地址，请使用sub -url http://xxx.xx/1 的方式来调用，多个订阅地址空格分隔进行合并")
+        print("没有找到有效的订阅地址，请使用sub -url http://xxx.xx/1 的方式来调用，多个订阅地址用|分隔进行合并")
         return
     if not sub_config:
         print("请先正确安装ShellCrash.")
@@ -290,18 +315,62 @@ if __name__ == "__main__":
         app.run("0.0.0.0", args.port)
         sys.exit(0)
     cdir = os.path.dirname(os.path.abspath(__file__))
-    crash_dir = os.getenv("CRASHDIR") or os.getcwd()
+    crash_dir = os.getenv("CRASHDIR")
     crash_config = f"{crash_dir}/configs/ShellCrash.cfg"
     if not os.path.exists(crash_config):
-        crash_config = f"{os.getcwd()}/configs/ShellCrash.cfg"
+        crash_dir = os.path.dirname(os.path.realpath(sys.argv[0]))
+        crash_config = f"{crash_dir}/configs/ShellCrash.cfg"
+        if not os.path.exists(crash_config):
+            crash_dir = os.getcwd()
+            crash_config = f"{crash_dir}/configs/ShellCrash.cfg"
 
     if os.path.exists(crash_config):
         print(f"找到ShellCrash配置文件: {crash_config}")
         sub_urls = []
         if args.url:
-            print("转换订阅URL：{}".format(" ".join(args.url)))
-            sub_urls = args.url
+            print("订阅URL：{}".format(args.url))
+            sub_urls = list(map(str.strip, args.url.split("|")))
         shell_crash_config(crash_dir, sub_urls=sub_urls)
         sys.exit(0)
 
-    app.run("0.0.0.0", args.port)
+    input_url = ""
+    if args.url:
+        print("订阅URL：{}".format(args.url))
+        sub_urls = list(map(str.strip, args.url.split("|")))
+        input_url = args.url
+    else:
+        input_url = input("请输入订阅URL，多个以 | 分隔：")
+        if not input_url or not input_url.startswith("http"):
+            print("无效的订阅URL")
+            sys.exit(0)
+        sub_urls = list(map(str.strip, input_url.split("|")))
+
+    targets = ["singbox", "clash", "clash.meta", "surge"]
+    if args.target:
+        target = args.target
+    else:
+        target = input("订阅输出格式{}，[singbox]：".format(", ".join(targets)))
+        if not target:
+            target = "singbox"
+    if target not in targets:
+        print("订阅输出格式必须是{}其中之一".format(", ".join(targets)))
+        sys.exit(0)
+
+    subinfo = subconvert(input_url, sub_urls, target=target)
+    if not subinfo or not isinstance(subinfo, dict):
+        print("订阅转换失败。")
+        sys.exit(0)
+
+    sub_body = subinfo["body"]
+    if subinfo["mimetype"] == "application/yaml":
+        sub_body = yaml.safe_dump(sub_body, allow_unicode=True, sort_keys=False, default_flow_style=False)
+        sub_config = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "config.yaml")
+    elif subinfo["mimetype"] == "application/json":
+        sub_body = json.dumps(sub_body, ensure_ascii=False, indent=2)
+        sub_config = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "config.json")
+    elif subinfo["mimetype"] == "text/plain":
+        sub_config = os.path.join(os.path.dirname(os.path.realpath(sys.argv[0])), "config.conf")
+
+    with open(sub_config, "wt", encoding="utf-8") as f:
+        print(f"已写入订阅配置: {sub_config}")
+        f.write(sub_body)
