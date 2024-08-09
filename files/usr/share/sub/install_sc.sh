@@ -76,7 +76,7 @@ if [ ! -d $CRASHDIR/ui -a -f $BASEDIR/meta_yacd.tar.gz ]; then
     tar -zxf $BASEDIR/meta_yacd.tar.gz -C $CRASHDIR/ui
     echo -e "yacd ui 面板 \033[32m安装成功！\033[0m"
 fi
-echo -e "订阅转换使用方法: /usr/share/sub/sub -url http://www.订阅1.com http://订阅2.com ..."
+echo -e "订阅转换使用: /usr/share/sub/sub -url http://www.订阅1.com|http://订阅2.com"
 
 [ -f ${CRASHDIR}/ui/index.html ] && [ -n "$(grep yacd ${CRASHDIR}/ui/index.html)" ] && setyacdip
 
