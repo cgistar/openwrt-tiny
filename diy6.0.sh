@@ -14,7 +14,3 @@ git clone https://github.com/WukongMaster/luci-app-poweroff.git package/luci-app
 
 # 3-添加 opentomcat 主题
 git clone https://github.com/WukongMaster/luci-theme-opentomcat.git package/luci-theme-opentomcat
-rm -rf feeds/luci/themes/luci-theme-design
-rm -rf feeds/luci/applications/luci-app-design-config
-git clone https://github.com/gngpp/luci-theme-design.git feeds/luci/themes/luci-theme-design
-git clone https://github.com/gngpp/luci-app-design-config.git feeds/luci/applications/luci-app-design-config
